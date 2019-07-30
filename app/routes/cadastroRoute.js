@@ -1,6 +1,15 @@
 module.exports = function(application){
+	
 	application.get('/cadastro', function(req, res){
-		//res.send('Bem vindo a sua app NodeJS!');
-		res.render('cadastroView');
+
+		application.app.controllers.cadastroController.cadastro(application, req, res);
+	
 	});
-}
+
+	application.post('/cadastrar', function(req, res){
+	
+		application.app.controllers.cadastroController.cadastrar(application, req, res);
+	
+	});
+};
+

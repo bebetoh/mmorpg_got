@@ -1,6 +1,11 @@
 module.exports = function(application){
 	application.get('/', function(req, res){
-		//res.send('Bem vindo a sua app NodeJS!');
-		res.render('indexView');
+		application.app.controllers.indexController.index(application, req, res);
+		
 	});
-}
+
+	application.post('/autenticar', function(req, res){
+		application.app.controllers.indexController.autenticar(application, req, res);
+		
+	});
+};
