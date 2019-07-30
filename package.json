@@ -16,5 +16,9 @@
     "express-session": "^1.14.1",
     "express-validator": "^2.20.8",
     "mongodb": "^2.2.9"
+  },
+  "devDependencies": {
+    "eslint": "^6.1.0",
+    "eslint-config-google": "^0.13.0"
   }
 }
