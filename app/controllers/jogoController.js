@@ -5,24 +5,24 @@ module.exports.jogo = function (application, req, res) {
         return;
         
     }
-    var comando_invalido = 'N'; 
-    if(req.query.commando_invalido == 'S'){
-        comando_invalido = 'S';
-    }
-    console.log(comando_invalido);
-
+    // var msg = ''; 
+    // if(req.query.msg != ''){
+    //     msg = 'S';
+    // }
+    var msg = req.query.msg
+    console.log(msg);
     var usuario = req.session.usuario;
     var casa = req.session.casa;
     var connection = application.config.dbConnection;
     var jogoDAO = new application.app.models.JogoDAO(connection);
 
-    jogoDAO.iniciaJogo(res, usuario, casa,comando_invalido);
+    jogoDAO.iniciaJogo(res, usuario, casa, msg);
 };
 
 module.exports.sair = function (application, req, res) {
 
     req.session.destroy(function(err){
-        res.render('indexView',{validacao: {}} ); 
+        res.render('indexView', {validacao: {}} ); 
     });
 };
 
@@ -34,7 +34,7 @@ module.exports.suditos = function (application, req, res) {
         
     }
 
-    res.render('aldeoesView',{validacao: {}} ); 
+    res.render('aldeoesView', {validacao: {}} ); 
 };
 
 module.exports.pergaminhos = function (application, req, res) {
@@ -45,7 +45,7 @@ module.exports.pergaminhos = function (application, req, res) {
         
     }
 
-    res.render('pergaminhosView',{validacao: {}} ); 
+    res.render('pergaminhosView', {validacao: {}} ); 
 };
 
 module.exports.ordenar_acao_sudito = function (application, req, res) {
@@ -57,11 +57,19 @@ module.exports.ordenar_acao_sudito = function (application, req, res) {
     var erros = req.validationErrors();
 
     if(erros){
-        res.redirect('jogo?commando_invalido=S');
+        res.redirect('jogo?msg=A');
         return;
     }
-    console.log('Entrou dados form', dadosForm);
     
-    res.send("tudo ok!");
+    
+    var connection = application.config.dbConnection;
+    var jogoDAO = new application.app.models.JogoDAO(connection);
+
+    console.log('dadosForm1', dadosForm);
+    
+    dadosForm.usuario = req.session.usuario;
+
+    jogoDAO.acao(dadosForm);
+    res.redirect('jogo?msg=B');
     //res.render('pergaminhosView',{validacao: {}} ); 
 };

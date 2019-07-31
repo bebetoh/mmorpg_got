@@ -2,7 +2,7 @@
 var mongo = require('mongodb');
 
 var connMongoDBWrapper = function () {
-    console.log("Entrou na função de conexão");
+    //console.log("Entrou na função de conexão");
     
     var db = new mongo.Db(
         'got',
