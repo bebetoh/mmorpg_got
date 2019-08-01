@@ -15,6 +15,7 @@
 		<link href="css/style.css" rel="stylesheet">
 
 		<script>
+			var timerId = null;
 			$(document).ready(function () {
 
 				$('#btn_sair').click(function () {
@@ -42,11 +43,24 @@
 						method: "get",
 						success: function (data) {
 							$('#acoes').html(data);
+
+							clearTimeout(timerId);
+							cronometro();
 						}
 					});
 				});
-				
 			});
+			
+
+			function cronometro() {
+				$('.tempo_restante').each(function(){
+					var segundos = $(this).html();
+					var segundos_atual = parseInt(segundos) - 1;
+					
+					$(this).html(segundos_atual);
+				});
+				timerId = setTimeout('cronometro()', 1000);
+			}
 			
 		</script>
 
