@@ -1,3 +1,5 @@
+var objectId = require('mongodb').ObjectId;
+
 class JogoDAO {
 
     constructor (connection) {
@@ -54,13 +56,13 @@ class JogoDAO {
                         tempo = 1 * 60 * 60000;
                     break;
                     case 2:
-                        tempo = 2 * 60 * 60000
+                        tempo = 2 * 60 * 60000;
                     break;
                     case 3:
-                        tempo = 5 * 60 * 60000
+                        tempo = 5 * 60 * 60000;
                     break;
                     case 4:
-                        tempo = 5 * 60 * 60000
+                        tempo = 5 * 60 * 60000;
                     break;
                 }
                     
@@ -68,6 +70,34 @@ class JogoDAO {
 
 
                 collection.insert(acao); 
+
+            });
+
+            mongoCliente.collection("jogo", function(err, collection){
+
+                var moedas = null;
+
+
+                switch (parseInt(acao.acao)) {
+                    case 1:
+                        moedas = -2 * parseInt(acao.quantidade);
+                    break;
+                    case 2:
+                        moedas = -3 * parseInt(acao.quantidade);
+                    break;
+                    case 3:
+                        moedas = -1 * parseInt(acao.quantidade);
+                    break;
+                    case 4:
+                        moedas = -1 * parseInt(acao.quantidade);
+                    break;
+                }
+
+                collection.update(
+                    { usuario: acao.usuario },
+                    { $inc: { moeda: moedas } } 
+                );
+
                 mongoCliente.close();
 
             });
@@ -88,6 +118,24 @@ class JogoDAO {
                     mongoCliente.close();
                 });
                
+            });
+        });
+    }
+
+    revogarAcao(_id, res){
+        this._connection.open(function(err, mongoCliente){
+            mongoCliente.collection("acao", function(err, collection){
+                console.log("Removendo: ", _id);
+                
+                collection.remove(
+                    {_id: objectId(_id)},
+                    function(err, result){
+                        console.log("Removendo err: ", err);
+                        //console.log("Removendo result: ", result);
+                        res.redirect("jogo?msg=D");
+                        mongoCliente.close();
+                    }
+                );
             });
         });
     }
