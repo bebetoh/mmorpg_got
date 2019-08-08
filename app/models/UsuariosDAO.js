@@ -1,3 +1,5 @@
+var crypto = require("crypto");
+
 function UsuariosDAO(connection) {
     console.log('Objeto carregado!');
     this._connection = connection();
@@ -5,9 +7,12 @@ function UsuariosDAO(connection) {
 };
 
 UsuariosDAO.prototype.inserirUsuario = function (usuario) {
-    console.log(usuario);
-    console.log(this._connection);
+    console.log(usuario); 
+
+    var senha_criptografada = crypto.createHash("md5").update(usuario.senha).digest("hex");
+    console.log(senha_criptografada);
     
+    usuario.senha = senha_criptografada
     this._connection.open(function(err, mongoCliente){
             mongoCliente.collection("usuarios", function(err, collection){
             collection.insert(usuario); 
@@ -21,6 +26,9 @@ UsuariosDAO.prototype.inserirUsuario = function (usuario) {
 UsuariosDAO.prototype.autenticar = function (usuario, req, res) {
     console.log(usuario);
 
+    var senha_criptografada = crypto.createHash("md5").update(usuario.senha).digest("hex");
+    usuario.senha = senha_criptografada;
+    
     this._connection.open(function(err, mongoCliente){
         mongoCliente.collection("usuarios", function(err, collection){
         collection.find(usuario).toArray(function(err, result){ //o result é o nosso array
@@ -40,7 +48,7 @@ UsuariosDAO.prototype.autenticar = function (usuario, req, res) {
                 //res.send('Usuario encontrado na base de dados.')
                 res.redirect("jogo");
             }else{
-                res.render("indexView", {validacao: [{msg: "usuUsuário não permitido."}]});
+                res.render("indexView", {validacao: [{msg: "Usuário não permitido."}]});
             }
             
         }); //returna um cursor e utilizadmo o toArray para recuperar o cursor colocando  num array no callback
